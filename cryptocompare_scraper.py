@@ -88,16 +88,15 @@ def create_adj_matrix(pair_dict, snapshot_directory, outfile="snapshot.csv"):
     for p1 in pair_dict.keys():
         with open(f"{snapshot_directory}/{p1}_pairs_snapshot.json", "r") as f:
             res = json.load(f)
-        quotes = res["Data"]["RAW"][p1]
-        for p2 in quotes:
-            try:
+        try:
+            quotes = res["Data"]["RAW"][p1]
+            for p2 in quotes:
                 df[p1][p2] = float(quotes[p2]["BID"])
                 df[p2][p1] = 1 / float(quotes[p2]["ASK"])
-            except KeyError:
-                print(f"Error for {p1}/{p2}")
-                continue
+        except KeyError:
+            print(f"Error for {p1}")
+            continue
     df.to_csv(outfile)
-
 
 if __name__ == "__main__":
     if AUTH == "":
